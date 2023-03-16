@@ -20,4 +20,3 @@ void _puts(char *str)
 		count++;
 	}
 }
-

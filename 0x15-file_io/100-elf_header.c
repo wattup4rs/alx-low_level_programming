@@ -17,7 +17,7 @@ void print_addr(char *ptr)
 	int begin;
 	char sys;
 
-	printf("  Entry point address:               0x");
+	printf("  Entry point address: 0x");
 
 	sys = ptr[4] + '0';
 	if (sys == '1')
@@ -112,7 +112,7 @@ void print_version(char *ptr)
 {
 	int version = ptr[6];
 
-	printf("  Version:                           %d", version);
+	printf("  Version:        %d", version);
 
 	if (version == EV_CURRENT)
 		printf(" (current)");
@@ -128,7 +128,7 @@ void print_data(char *ptr)
 {
 	char data = ptr[5];
 
-	printf("  Data:                              2's complement");
+	printf("  Data:       2's complement");
 	if (data == 1)
 		printf(", little endian\n");
 
@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
 		exit(98);
 	}
 
-	lseek(fd, 0, SEEK_SET);
+	lseek(file, 0, SEEK_SET);
 	ret_read = read(file, ptr, 27);
 
 	if (ret_read == -1)

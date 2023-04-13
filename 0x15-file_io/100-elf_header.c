@@ -7,77 +7,64 @@
 #include <elf.h>
 
 /**
- * print_addr - prints the address
- * @ptr: magic.
- * Return: no return.
+ * print_addr - prints address
+ * @ptr: ELF header
  */
 void print_addr(char *ptr)
 {
-	int i;
-	int begin;
-	char sys;
+    int i;
+    int begin;
+    char sys;
 
-	printf("  Entry point address: 0x");
+    printf("  Entry point address:               0x");
 
-	sys = ptr[4] + '0';
-	if (sys == '1')
-	{
-		begin = 26;
-		printf("80");
-		for (i = begin; i >= 22; i--)
-		{
-			if (ptr[i] > 0)
-				printf("%x", ptr[i]);
-			else if (ptr[i] < 0)
-				printf("%x", 256 + ptr[i]);
-		}
-		if (ptr[7] == 6)
-			printf("00");
-	}
+    sys = ptr[4];
+    if (sys == ELFCLASS32)
+    {
+        begin = 26;
+        printf("80");
+        for (i = begin; i >= 22; i--)
+        {
+            if (ptr[i] > 0)
+                printf("%02x", ptr[i]);
+            else if (ptr[i] < 0)
+                printf("%02x", 256 + ptr[i]);
+        }
+        if (ptr[5] == ELFDATA2LSB)
+            printf("00");
+    }
 
-	if (sys == '2')
-	{
-		begin = 26;
-		for (i = begin; i > 23; i--)
-		{
-			if (ptr[i] >= 0)
-				printf("%02x", ptr[i]);
-
-			else if (ptr[i] < 0)
-				printf("%02x", 256 + ptr[i]);
-
-		}
-	}
-	printf("\n");
+    if (sys == ELFCLASS64)
+    {
+        begin = 24;
+        for (i = begin; i < begin + 8; i++)
+        {
+            printf("%02x", ptr[i]);
+        }
+    }
+    printf("\n");
 }
 
 /**
- * print_type - prints the type
- * @ptr: magic.
- * Return: no return.
+ * print_type - prints type
+ * @ptr: ELF header
  */
 void print_type(char *ptr)
 {
-	char type = ptr[16];
+    char type;
 
-	if (ptr[5] == 1)
-		type = ptr[16];
-	else
-		type = ptr[17];
+    if (ptr[4] == ELFCLASS32)
+        type = ptr[16];
+    else
+        type = ptr[18];
 
-	printf("  Type:                              ");
-	if (type == 0)
-		printf("NONE (No file type)\n");
-	else if (type == 1)
-		printf("REL (Relocatable file)\n");
-	else if (type == 2)
-		printf("EXEC (Executable file)\n");
-	else if (type == 3)
-		printf("DYN (Shared object file)\n");
-	else if (type == 4)
-		printf("CORE (Core file)\n");
-	else
-		printf("<unknown: %x>\n", type);
+    printf("  Type:                              ");
+    if (type == ET_NONE)
+        printf("NONE (No file type)\n");
+    else if (type == ET_REL)
+        printf("REL (Relocatable file)\n");
+    else
+        printf("Unknown (%d)\n", type);
 }
 
 /**
@@ -87,38 +74,40 @@ void print_type(char *ptr)
  */
 void print_osabi(char *ptr)
 {
-	char osabi = ptr[7];
+    char osabi = ptr[7];
 
-	printf("  OS/ABI:                            ");
-	if (osabi == 0)
-		printf("UNIX - System V\n");
-	else if (osabi == 2)
-		printf("UNIX - NetBSD\n");
-	else if (osabi == 6)
-		printf("UNIX - Solaris\n");
-	else
-		printf("<unknown: %x>\n", osabi);
+    printf("  OS/ABI:                            ");
+    switch (osabi)
+    {
+        case 0:
+            printf("UNIX - System V\n");
+            break;
+        case 2:
+            printf("UNIX - NetBSD\n");
+            break;
+        case 6:
+            printf("UNIX - Solaris\n");
+            break;
+        default:
+            printf("<unknown: %x>\n", osabi);
+            break;
+    }
 
-	printf("  ABI Version:                       %d\n", ptr[8]);
+    printf("  ABI Version:                       %d\n", ptr[8]);
 }
 
 
 /**
- * print_version - prints the version
+ * print_version - prints version
  * @ptr: magic.
  * Return: no return.
  */
 void print_version(char *ptr)
 {
-	int version = ptr[6];
+    int version = ptr[6];
 
-	printf("  Version:        %d", version);
+    printf("  Version:                           %d",
 
-	if (version == EV_CURRENT)
-		printf(" (current)");
-
-	printf("\n");
-}
 /**
  * print_data - prints the data
  * @ptr: magic.

@@ -1,2 +1,1 @@
-# alx-low_level_programming
-Hello world!
+# simple_shell

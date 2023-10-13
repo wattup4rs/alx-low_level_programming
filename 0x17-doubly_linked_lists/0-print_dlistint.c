@@ -1,4 +1,4 @@
-#include "list.h"
+#include "lists.h"
 
 /**
  * print_dlistint - prints all the elements of a
@@ -6,7 +6,7 @@
  *
  * @h: head of the list
  * @h: head of the list
- * Return: the number of the nodes
+i * Return: the number of the nodes
  */
 size_t print_dlistint(const dlistint_t *h)
 {
